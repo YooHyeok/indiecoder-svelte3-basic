@@ -224,6 +224,64 @@ SPA 구조 앱을 만들 때 페이지가 하나라고 해서 하나의 페이�
 ![alt text](docs/images/part01/image-2.png)  
 App.svelte 라는 제일 상위 컴포넌트가 있고 해당 컴포넌트로부터 가지가 뻗어나가듯 다양한 컴포넌트가 위치하게 되는 구조이다.  
 
+### 4. Props
+하나의 컴포넌트에 배치된 컴포넌트들은 props를 이용해 통신할 수 있다.  
+상위 컴포넌트에서 하위 컴포넌트로 상태값을 전달하는 것으로 단방향적인 성격을 가진다.  
+
+사용 방법은 `<ComponentName {상태변수}/>` 형태와 같이 선언된 컴포넌트 태그 내 중괄호를 작성하고 그 안에 상태값의 이름(변수명)을 작성하여 값을 넘길 수 있다.  
+```svelte
+<script>
+  import ComponentName from '~/componentName.svelte'
+  let state = 0;
+</script>
+```
+
+받는 측에서는 `export` 키워드를 사용하여 `export let 상태변수` 형태로 선언하여 값을 받는다.
+```svelte
+<script>
+  export let state;
+</script>
+```
+
+이렇게 전달된 props는 단방향적인 성격을 가진다.  
+그래서 만약 하위 컴포넌트에서 상위 컴포넌트의 상태값을 변경할 경우 상위 컴포넌트의 변경과 관련된 메소드를 만들고 해당 메소드를 상태값과 같은 방법으로 전달하여 사용해야 한다.
+
+```svelte
+<script>
+  import BtnClick from './btnClick.svelte'
+  let count = 0;
+
+  function handleClick() {
+    //이벤트 코드
+    count += 1;
+  }
+</script>
+<BtnClick {count} {handleClick} />
+```
+전달받는 측에서는 상태값과 마찬가지로 export let으로 함수를 받을 수 있다.  
+```svelte
+<script>
+  export let count;
+  export let handleClick;
+</script>
+
+<button on:click={handleClick}>
+  클릭수 {count}
+</button>
+```
+
+참고로 하위 컴포넌트에서 전달받은 상태값을 그냥 변경해버릴 경우 상위 컴포넌트의 상태값은 변경되지 않는다.  
+따라서 props를 이용한 상태값의 제어의 경우 꼭 상태값에 위치한 상위 컴포넌트에 변경 메소드를 만들어
+변경하고자 하는 하위 컴포넌트로 전달하여 제어해야 한다.  
+
+#### 단방향 바인딩
+상위 컴포넌트에서 변경이 되고 변경이 되면 다시 하위컴포넌트로 전달되는방식이다.
+react나 vue와 같은 프론트엔드 프레임워크에서 널리사용되는 통신 패턴이다.  
+핵심은 상위 컴포넌트에서 하위 컴포넌트로만 변화를 전달할 수 있다.
+props를 이용하면 상하관계의 상태값 조작은 용이하지만 수평관계이거나 혹은 컴포넌트끼리 거리가 아주 먼 경우 구조가 복잡해 질 수 있다.  
+이 경우 context, dispatcher, store 등을 이용하여 통신하면 된다.  
+강의에서는 전역 컴포넌트 통신에 store를 사용한다.  
+
 </details>
 <br>
 
