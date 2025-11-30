@@ -4,7 +4,7 @@
   import Ex03 from "./part01_basic/Ex03.svelte";
   import Ex04 from "./part01_basic/Ex04.svelte";
   import Ex05 from "./part01_basic/Ex05.svelte";
-</script>
+  import Ex06 from "./part01_basic/Ex06.svelte";
 
 <div>
   <div><h1>인프런 Indie Coder</h1></div>
@@ -13,4 +13,5 @@
   <Ex03 />
   <Ex04 />
   <Ex05 />
+  <Ex06 />
 </div>
