@@ -355,6 +355,80 @@ markup 영역에서 `{#if 조건}`형태와 같이 중괄호 안에 `#if`를 작
 <br>
 
 
+# Store
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+전역으로 사용 가능한 상태값 저장소
+앱을 개발하다 보면 컴포넌트에서 사용되는 상태값이 여러개의 다른 컴포넌트에 영향을 주는 일이 자주 발생한다.  
+
+![alt text](docs/images/part02/image.png)  
+위와 같은 컴포넌트 구조로 구성된 앱이 있다고 가정해보자.  
+7번 컴포넌트에서 값을 변경 후 10번으로 전달해야 한다면 기존 props를 이용해 통신할 경우 아래와 같은 과정이 필요할 것이다.  
+![alt text](docs/images/part02/image-1.png)  
+이 과정은 결코 효율적이라 할 수 없다.  
+
+스토어를 만들고 모든 컴포넌트가 스토어를 바라보게 만들면 아주 쉽게 컴포넌트간 공유할 수 있는 상태값을 만들고 제어할 수 있다.  
+![alt text](docs/images/part02/image-2.png)  
+컴포넌트가 스토어를 바라보기만 한다면 상위 또는 하위 컴포넌트를 거치지 않고 바로 상태값을 변경할 수 있기 때문이다.  
+
+### 사용 방법
+stores.js라는 모듈 파일을 만들어 사용한다.  
+svelte/store로 부터 writable 모듈을 import하여 사용한다.  
+
+- store.js
+  ```js
+  import { writable } from 'svelte/store';
+  export const storeName = writable(초기값)
+  ```
+
+writable은 스토어의 종류 중 가장 많이 사용되는 기본 형태의 스토어 모듈이다.  
+읽기, 수정, 삭제가 모두 가능한 법용적인 스토어이다.  
+writable()로 초기값을 지정하여 생성한 후 store 이름을 지정하여 내보낸다.  
+(외부에서 사용해야 하기 때문에 export 키워드로 내보내야한다.)
+
+이렇게 만들어진 store는 외부에서 import를 통해 불러와 사용할 수 있다.  
+```svelte
+<script>
+  import { storeName } from '~/store.js'
+</script>
+```
+
+#### `$` 자동 구독
+불러온 store는 일반적인 상태값과 달리 접두사로 `$` 기호를 사용하여 접근해야 한다.  
+(이를 공식적으로는 자동구독이라고 한다.)
+- Increment.svelte
+  ```svelte
+  <script>
+    import { storeName } from '~/store.js'
+    const onIncrement = () => {
+      $storeName = $storeName + 1
+    }
+  </script>
+  ```
+- Decrement.svelte
+  ```svelte
+  <script>
+    import { storeName } from '~/store.js'
+    const onDecrement = () => {
+      $storeName = $storeName - 1
+    }
+  </script>
+  ```
+- Result.svelte
+  ```svelte
+  <script>
+    import { storeName } from '~/store.js'
+  </script>
+  <p>{ $storeName }</p>
+  ```
+
+위와 같이 3개의 컴포넌트에서 하나의 store 상태변수에 접근이 가능하다.
+</details>
+<br>
+
+
 # Template
 <details>
 <summary>접기/펼치기</summary>
