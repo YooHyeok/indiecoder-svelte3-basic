@@ -1,1 +1,1 @@
-<h3>Header Component</h2>
+<h3>Header Component</h3>

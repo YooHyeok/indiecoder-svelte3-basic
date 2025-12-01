@@ -1,1 +1,1 @@
-<h3>Footer Component</h2>
+<h3>Footer Component</h3>
