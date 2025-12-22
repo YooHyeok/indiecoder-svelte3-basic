@@ -6,6 +6,7 @@
   import Ex05 from "./part01_basic/Ex05.svelte";
   import Ex06 from "./part01_basic/Ex06.svelte";
   import Store1 from "./part02_store/ex01/Store.svelte";
+  import Store2 from "./part02_store/ex02/Store.svelte";
 </script>
 
 <div>
@@ -17,4 +18,5 @@
   <Ex05 />
   <Ex06 />
   <Store1 />
+  <Store2 />
 </div>
