@@ -496,6 +496,67 @@ export const count = createCount();
 </details>
 <br>
 
+
+# Slot
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+상태값과 별개로 markup 영역에 html이 반복적으로 사용될 때 재사용 할 필요가 종종 발생한다.  
+
+예를들어 아래와 같은 카드 컴포는트를 계속해서 재사용 할 일이 있다고 가정해 본다.  
+![alt text](part03/image.png)  
+기본적인 레이아웃은 변하지 않지만 컴포넌트 내부의 HTML 내용은 계속 변경될 수 있다.  
+이때 컴포넌트로 전달되는 데이터는 아래와 같이 h2태그와 p태그 안의 내용이 된다.  
+![alt text](part03/image-1.png)  
+이와 같은 상황을 처리할 때 내용만을 props로 전달하는 방법이 있다.  
+```svelte
+<script>
+  import Card from './card.svelte'
+</script>
+<Card title={title1} content={content1}></Card>
+<Card title={title2} content={content2}></Card>
+```
+하지만 필요에 따라 컴포넌트 안에 사용되는 태그도 같이변경된다면 어떨까?
+이런 상황을 props를 이용해 처리하는 방식은 쉽지 않다.  
+
+Slot을 사용하면 쉽게 구현이 가능하다.  
+## ex01) 기본 예제
+- [Card.svelte](src/repl/part03_slot/ex01/Card.svelte)
+  ```svelte
+  <div class="card">
+    <slot></slot>
+  </div>
+  ```
+위와 같이 Card 컴포넌트로 내용을 전달할 다른 컴포넌트로부터, 넘겨받은 태그를 출력할 위치에 `<slot></slot>` 태그를 삽입하여 Card 컴포넌트 내용을 작성한다.  
+
+- [Slot.svelte](src/repl/part03_slot/ex01/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card>
+      <h2>안녕하세요!</h2>
+      <p>이곳은 내용이 들어가는 영역입니다.</p>
+    </Card>
+    <br />
+    <Card>
+      <h2>Hello Svelte</h2>
+      <p>Svelte를 배우는 여러분을 환영합니다.</p>
+      <p>즐거운 코딩 되세요...</p>
+    </Card>
+  </div>
+  ```
+Card.svelte 컴포넌트를 import한 후 일반적인 컨테이너(열리고 닫히는 쌍)태그처럼 선언하고, 해당 태그 사이에 끼워넣으면 Card 컴포넌트의 `<slot></slot>`에 출력(배치)되게 된다.  
+
+`<slot>` 태그로 실제 정의하여 슬롯을 받는쪽을 **자식 컴포넌트**라고 부르며,  
+이렇게 정의한 자식 컴포넌트를 import 하여 slot에 들어갈 내용을 직접 채워넣는 쪽을 **부모 컴포넌트**라고 정의한다.
+
+</details>
+<br>
+
 # Template
 <details>
 <summary>접기/펼치기</summary>
