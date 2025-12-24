@@ -554,6 +554,75 @@ Card.svelte 컴포넌트를 import한 후 일반적인 컨테이너(열리고 �
 `<slot>` 태그로 실제 정의하여 슬롯을 받는쪽을 **자식 컴포넌트**라고 부르며,  
 이렇게 정의한 자식 컴포넌트를 import 하여 slot에 들어갈 내용을 직접 채워넣는 쪽을 **부모 컴포넌트**라고 정의한다.
 
+## ex02) alias를 통한 배치위치지정(name속성) 예제
+만약 slot 태그를 통해 특정 dom 노드를 넘겨받는 컴포넌트 내에 여러개의 slot이 작성되어있다면 어떻게 될까?
+- Card.svelte
+  ```svelte
+  <article class="contact-card">
+    <h2>
+      <slot></slot>
+    </h2>
+    <div class="address">
+      <slot></slot>
+    </div>
+    <div class="email">
+      <slot></slot>
+    </div>
+  </article>
+  ```
+- Slot.svelte
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card>
+      <span> 홍길동 </span>
+      <span>
+        서울특별시 <br />
+        여의도동
+      </span>
+    </Card>
+  </div>
+  ```
+위 경우 Slot에서 작성한 Card 태그 사이에 선언한 모든 태그들을 h2하위의 slot, div.address의 slot 그리고 div.email 영역 각각에 동일한 내용으로 반복해서 출력할것이다.
+
+
+- [Card.svelte](src/repl/part03_slot/ex02/Card.svelte)
+  ```svelte
+  <article class="contact-card">
+    <h2>
+      <slot name="name"></slot>
+    </h2>
+    <div class="address">
+      <slot name="address"></slot>
+    </div>
+    <div class="email">
+      <slot name="email"></slot>
+    </div>
+  </article>
+  ```
+위와 같이 Card 컴포넌트 내에 삽입된 여러 slot 태그들 각각에 name 속성으로 중복되지 않는 alias를 지정해준다.  
+
+- [Slot.svelte](src/repl/part03_slot/ex02/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card>
+      <!-- slot의 name속성에 부여한 별칭과 매핑 -->
+      <span slot="name"> 홍길동 </span>
+      <span slot="address">
+        서울특별시 <br />
+        여의도동
+      </span>
+    </Card>
+  </div>
+  ```
+
 </details>
 <br>
 
