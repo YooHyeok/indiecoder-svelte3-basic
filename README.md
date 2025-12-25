@@ -623,6 +623,47 @@ Card.svelte 컴포넌트를 import한 후 일반적인 컨테이너(열리고 �
   </div>
   ```
 
+## ex03) alias - name속성 기본값 출력
+- [Card.svelte](src/repl/part03_slot/ex03/Card.svelte)
+  ```svelte
+  <article class="contact-card">
+    <h2>
+      <slot name="name">
+        <!-- slot="{name}"의 name과 매핑되지 않을 경우 출력될 기본값 -->
+        <span class="missing">이름 미입력</span>
+      </slot>
+    </h2>
+    <div class="address">
+      <slot name="address">
+        <span class="missing">주소 미입력</span>
+      </slot>
+    </div>
+    <div class="email">
+      <slot name="email">
+        <span class="missing">이메일 미입력</span>
+      </slot>
+    </div>
+  </article>
+  ```
+위와 같이 slot을 배치하는 주체인 Card컴포넌트의 각 slot태그 사이에 기본적으로 출력할 태그를 삽입할 경우 slot에 삽입할 실질적인 dom을 전달하는 컴포넌트가 각 alias에 매핑되는 태그를 전달하지 않는다면, 기본적으로 출력할 태그가 삽입되게 된다.
+
+- [Slot.svelte](src/repl/part03_slot/ex03/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card>
+      <!-- <span slot="name"> 홍길동 </span> -->
+      <span slot="address">
+        서울특별시 <br />
+        여의도동
+      </span>
+    </Card>
+  </div>
+  ```
+
 </details>
 <br>
 
