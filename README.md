@@ -664,6 +664,113 @@ Card.svelte 컴포넌트를 import한 후 일반적인 컨테이너(열리고 �
   </div>
   ```
 
+## ex04) $$slots를 통한 슬롯 아용여부
+
+`$$slots.slot이름`을 통해 슬롯 정보를 받아올 수 있다.
+해당 문법과 템플릿 문법중 `{#if}` 문법을 사용하여, 슬롯 사용여부를 확인할 수 있다.  
+
+
+- [Card.svelte](src/repl/part03_slot/ex04/Card.svelte)
+  ```svelte
+  <article class="contact-card">
+    <h2>
+      <slot name="name">
+        <span class="missing">이름 미입력</span>
+      </slot>
+    </h2>
+    <div class="address">
+      <slot name="address">
+        <span class="missing">주소 미입력</span>
+      </slot>
+    </div>
+    {#if $$slots.email}
+      <!-- email 이름의 slot이 존재할경우 렌더링 -->
+      <div class="email">
+        <hr />
+        <slot name="email">
+          <span class="missing">이메일 미입력</span>
+        </slot>
+      </div>
+    {/if}
+  </article>
+  ```
+
+- [Slot.svelte](src/repl/part03_slot/ex04/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card>
+      <span slot="name"> 홍길동 </span>
+      <span slot="address">
+        서울특별시 <br />
+        여의도동
+      </span>
+      <span slot="email"> webdevyoo@gmail.com </span>
+    </Card>
+  </div>
+  ```
+
+### $$slots란?
+여기서 `$$slots`는 컴파일 타임에 자동으로 생기는 js 변수로 svelte 컴파일러가 주입하는 내부 예약 변수이다.  
+
+```svelte
+<div>
+  {JSON.stringify($$slots)}
+</div>
+```
+위와같이 템필릿 영역에 실제로 출력해보면 아래와 같은 JSON 데이터가 출력된다
+```json
+{"email":true,"address":true,"name":true}
+```
+
+객체 내 각 프로퍼티는 **부모 컴포넌트**인 `<Slot/>`에서 `<Card/>` 사용부를 분석하고 내용이 채워져있다면 
+slot="별칭"을 사용하였다면 `{"별칭":true}`로, 사용되지 않았다면 `{"default": true}` 형태로 출력된다.  
+
+#### default 속성
+- [Slot.svelte](src/repl/part03_slot/ex05/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card>
+      <span> 홍길동 </span>
+    </Card>
+  </div>
+  ```
+
+#### {} 빈 객체
+만약 자식 컴포넌트를 import 한 후 아무런 값도 전달하지 않을 경우엔 `$$slots`가 {}로 채워진다.  
+
+- [Slot.svelte](src/repl/part03_slot/ex04/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <Card></Card>
+  </div>
+  ```
+#### undefined
+
+만약 자식 컴포넌트를 import 한 후 선언조차 하지 않은경우 `$$slots`는 undefined가 된다.
+
+- [Slot.svelte](src/repl/part03_slot/ex04/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+  </div>
+  ```
+
+
 </details>
 <br>
 
