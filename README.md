@@ -505,10 +505,10 @@ export const count = createCount();
 상태값과 별개로 markup 영역에 html이 반복적으로 사용될 때 재사용 할 필요가 종종 발생한다.  
 
 예를들어 아래와 같은 카드 컴포는트를 계속해서 재사용 할 일이 있다고 가정해 본다.  
-![alt text](part03/image.png)  
+![alt text](docs/images/part03/image.png)  
 기본적인 레이아웃은 변하지 않지만 컴포넌트 내부의 HTML 내용은 계속 변경될 수 있다.  
 이때 컴포넌트로 전달되는 데이터는 아래와 같이 h2태그와 p태그 안의 내용이 된다.  
-![alt text](part03/image-1.png)  
+![alt text](docs/images/part03/image-1.png)  
 이와 같은 상황을 처리할 때 내용만을 props로 전달하는 방법이 있다.  
 ```svelte
 <script>
@@ -769,6 +769,115 @@ slot="별칭"을 사용하였다면 `{"별칭":true}`로, 사용되지 않았다
   <div>
   </div>
   ```
+
+## ex05) [번외] 동적 class 적용
+
+### 기본 문법
+동적 클래스의 기본문법으로는 style 태그에 선언한 클래스명을 `class:클래스명={상태변수}` 형태로 상태값에 따라 클래스를 동적으로 추가/제거 할 수 있다.  
+```svelte
+<script>
+  let isActive = false;
+</script>
+<h1 class:active={isActive} on:mouseover={()=>isActive = !isActive}></h1>
+<style>
+  .active { color: blue; }
+</style>
+```
+이제 마우스를 오버하면 폰트색이 파란색으로 변경된다.  
+
+#### 축약형
+클래스명과 상태변수명이 같다면 `class:상태변수` 형태로 축약이 가능하다.
+```svelte
+<script>
+  let active = false;
+</script>
+<h1 class:active on:mouseover={()=>active = !active}></h1>
+<style>
+  .active { color: blue; }
+</style>
+```
+
+### 예제
+기존 ex04의 Slot 컴포넌트에 마우스를 오버 이벤트가 발생하면 동적으로 클래스가 적용되어 카드 색상과 폰트의 크기가 변경되도록 적용한다.  
+<details>
+<summary>코드 펼치기/접기</summary>
+<br>
+
+```svelte
+<script>
+  let hovering = false;
+  const enter = () => (hovering = true);
+  const leave = () => (hovering = false);
+</script>
+
+<article
+  class="contact-card"
+  class:hovering
+  on:mouseenter={enter}
+  on:mouseleave={leave}
+>
+  <h2>
+    <slot name="name">
+      <!-- slot="{name}"의 name과 매핑되지 않을 경우 출력될 기본값 -->
+      <span class="missing">이름 미입력</span>
+    </slot>
+  </h2>
+  <div class="address">
+    <slot name="address">
+      <span class="missing">주소 미입력</span>
+    </slot>
+  </div>
+  {#if $$slots.email}
+    <!-- email 이름의 slot이 존재할경우 렌더링 -->
+    <div class="email">
+      <hr />
+      <slot name="email">
+        <span class="missing">이메일 미입력</span>
+      </slot>
+    </div>
+  {/if}
+</article>
+
+<style>
+  .contact-card {
+    width: 300px;
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1em;
+    margin: 0 auto;
+  }
+
+  h2 {
+    padding: 0 0 0.2em 0;
+    margin: 0 0 1em 0;
+    border-bottom: 1px solid #ff3e00;
+  }
+
+  .address,
+  .email {
+    padding: 0 0 0 1.5em;
+    background: 0 50% no-repeat;
+    background-size: 1em 1em;
+    margin: 0 0 0.5em 0;
+    line-height: 1.2;
+  }
+  .address {
+    background-image: url(tutorial/icons/map-marker.svg);
+  }
+  .email {
+    background-image: url(tutorial/icons/emain.svg);
+  }
+  .missing {
+    color: #999;
+  }
+
+  .hovering {
+    background-color: violet;
+  }
+</style>
+
+```
 
 
 </details>
