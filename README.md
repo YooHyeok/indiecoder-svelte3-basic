@@ -879,6 +879,59 @@ slot="별칭"을 사용하였다면 `{"별칭":true}`로, 사용되지 않았다
 
 ```
 
+## ex06) slot 데이터 전달(slot pros - scoped slot)
+`<slot>` 태그에 속성 형태로 값을 전달하면, 부모 컴포넌트에서 `let:` 문법을 통해 해당 값을 수신할 수 있다.  
+이를 slot props(scoped slot)라고 한다.  
+
+slot 데이터 전달은 자식 → 부모 방향으로 이루어진다.  
+- 자식 컴포넌트: `<slot prop={value}></slot>`
+- 부모 컴포넌트: `<Child let:prop>`
+이는 일반적으로 부모 → 자식 방향으로 흐르는 props의 데이터 흐름과 반대된다.  
+slot props는 컴포넌트 전체가 아니라 slot 컨텐츠 영역에만 스코프가 한정된다.  
+즉, 자식 컴포넌트가 자신이 알고 있는 상태를 부모가 전달한 slot 콘텐츠를 렌더링하는 과정에서만 사용할 수 있도록 제공하는 방식이다.  
+자식은 레이아웃과 상태의 소유자이고, 부모는 그 상태를 어떻게 표현할지만 결정한다.  
+이처럼 상태와 구조를 담당하는 책임과, 표현 방식을 담당하는 책임 분리에 맞춰 slot props가 사용된다.
+
+
+### 예제
+- [Card.svelte](src/repl/part03_slot/ex06/Card.svelte)
+  ```svelte
+  <script>
+    let hovering = false;
+  </script>
+
+  <article class="contact-card">
+    <div class="email">
+      <hr />
+      <slot {hovering} name="email">
+        <span class="missing">이메일 미입력</span>
+      </slot>
+    </div>
+  </article>
+  ```
+  `<slot {hovering}>` 문법은 `hovering={hovering}`의 축약형이다.  
+  해당 값은 slot을 통해 부모 컴포넌트에 전달되며 `name="email"` 이므로 email 슬롯에만 전달된다.  
+
+- [Slot.svelte](src/repl/part03_slot/ex06/Slot.svelte)
+  ```svelte
+  <script>
+    import Card from "./Card.svelte";
+  </script>
+
+  <div>
+    <!-- Card컴포넌트에서 slot태그를 통해 전달한 hovering 값 수신 -->
+    <Card let:hovering>
+      <span slot="email">
+        {#if hovering}
+          <h2><b>webdevyoo@gmail.com</b></h2>
+        {:else}
+          webdevyoo@gmail.com
+        {/if}
+      </span>
+    </Card>
+  </div>
+  ```
+
 
 </details>
 <br>
