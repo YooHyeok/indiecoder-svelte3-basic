@@ -932,6 +932,54 @@ slot props는 컴포넌트 전체가 아니라 slot 컨텐츠 영역에만 스�
   </div>
   ```
 
+## ex07) fragment (svelte:fragment)
+
+- [Widget.svelte](src/repl/part03_slot/ex07/Widget.svelte)
+  ```svelte
+  <article class="contact-card">
+    <slot name="header">No header was provided</slot>
+    <p>Some content between header and footer</p>
+    <slot name="footer">No header was provided</slot>
+  </article>
+  ```
+- [Slot.svelte](src/repl/part03_slot/ex07/Slot.svelte)
+  ```svelte
+  <script>
+    import Widget from "./Widget.svelte"
+  </script>
+  <Widget>
+    <h2 slot="header">Hello</h2>
+    <div slot="footer">
+      <p>All rights reserved.</p>
+      <p>Copyright (c) 2019 Svelte Industries</p>
+    </div>
+  </Widget>
+  ```
+
+Slot 컴포넌트에서 Widget이라는 컴포넌트를 불러와 사용하고 있다.  
+slot 속성에 footer를 지정하여 매핑하기 위해 임의의 div를 만들수밖에 없는 상황인 것을 확인할 수 있다.  
+즉, 의미없는 div가 추가되는 것으로 이 때문에 디자인 요소 등이 틀어질 가능성도 생길수 있다.  
+
+이런 경우 DOM으로 감싸지 않고 바로 명명된 슬롯을 사용할 수 있는 방법이 바로 fragment이다.  
+- [Slot.svelte](src/repl/part03_slot/ex07/Slot.svelte)
+  ```svelte
+  <script>
+    import Widget from "./Widget.svelte"
+  </script>
+  <Widget>
+    <h2 slot="header">Hello</h2>
+    <svelte:fragment slot="footer">
+      <p>All rights reserved.</p>
+      <p>Copyright (c) 2019 Svelte Industries</p>
+    </svelte:fragment>
+  </Widget>
+  ```
+위와같이 기존 div 태그 대신 svelte:fragment로 구성하면 된다.  
+svelte:fragment를 사용함으로써 필요없는 DOM 요소를 만들지 않고도 슬롯을 사용할 수 있게 된다.  
+
+</details>
+<br>
+
 
 </details>
 <br>
