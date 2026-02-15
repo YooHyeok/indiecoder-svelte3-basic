@@ -980,6 +980,235 @@ svelte:fragment를 사용함으로써 필요없는 DOM 요소를 만들지 않�
 </details>
 <br>
 
+# Transition 화면전환 효과
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+HTML DOM 영역이 화면에 나타날 때 혹은 사라질 때 페이드 효과나 슬라이드 등의 전환효과를 줄 수 있는 기능이다.  
+
+## svelte 지원 효과
+- fade
+- slide
+- blur
+- fly
+- scale
+- draw
+
+transition을 적용하는 기본 문법은 아래와 같다.
+```svelte
+<script>
+  import { fade, blur, fly, slide, scale, draw } from "svelte/transition";
+  import { bounceInOut, backOut } from "svelte/easing";
+
+  let current = null;
+  let visibles = {
+    fade: false
+  };
+
+  const changeVisible = (type) => {
+    visibles[type] = !visibles[type];
+  };
+</script>
+
+<div>
+  <article class="contact-card">
+    <button on:click={() => changeVisible("fade")}>fade</button>
+    <br />
+
+    {#if visibles.fade}
+      <div transition:fade class="wrap">
+        <h1>fade 예제</h1>
+      </div>
+    {/if}
+  </article>
+</div>
+```
+
+먼저 `svelte/transition`로 부터 부여할 transition 효과를 불러온다.  
+```svelte
+<script>
+  import { fade, blur, fly, slide, scale, draw } from "svelte/transition";
+</script>
+```
+
+다음으로 트랜지션을 적용할 태그에 `transition:트랜지션이름`과 같이 불러온 transition 효과를 transition 속성에 지정해준다.
+```svelte
+<div transition:트랜지션이름 class="wrap">
+  <h1>fade 예제</h1>
+</div>
+```
+transition을 적용한 dom이 나타나거나 사라질 때 선택한 트랜지션 효과가 적용된다.  
+완성 코드: [Transition01.svelte](src/repl/part04_transition/Transition01.svelte)
+
+
+## 공통 옵션
+- delay  
+  지정한 시간 후에 전환 효과가 실행
+- duration  
+  효과가 지속되는 시간
+- easing  
+  샘플링 된 전환효과들의 옵션
+
+
+```svelte
+<div transition:트랜지션이름={{duration:1000, delay:500}}>
+</div>
+```
+위와같이 대괄호를 두번 작성하고 그 안에 원하는 옵션을 지정하여 트랜지션이름에 할당한다.  
+duration과 delay는 모두 시간과 관련된 옵션으로 1000은 1초를 의미한다.  
+0.5호 후 1초동안 효과 실행
+
+완성 코드: [Transition02.svelte](src/repl/part04_transition/Transition02.svelte)
+
+### easing
+균일한 속도가 아닌 다이나믹한 효과를 제공하는 옵션이다.  
+11가지 정도의 easing이 옵션으로 제공되고 있다.  
+(https://svelte.dev/docs#run-time-svelte-easing)  
+각각의 옵션은 in, out, inOut 옵션을 가지게 된다.  
+
+
+각 효과를 구현한 예제코드는 다음과 같다.
+- [Transition03.svelte](src/repl/part04_transition/Transition03.svelte)
+```svelte
+<script>
+  import { fade, blur, fly, slide, scale, draw } from "svelte/transition";
+  import { bounceInOut, elasticInOut } from "svelte/easing";
+
+  let current = null;
+  let visibles = {
+    fade: false,
+    slide: false
+  };
+
+  const changeVisible = (type) => {
+    visibles[current] = false;
+    if (current == type) {
+      current = null;
+      return;
+    }
+    current = type;
+    visibles[type] = !visibles[type];
+  };
+</script>
+
+<div>
+  <article class="contact-card">
+    <button on:click={() => changeVisible("fade")}>fade</button>
+    <button on:click={() => changeVisible("slide")}>slide</button>
+    <br />
+
+    {#if visibles.fade}
+      <div transition:fade={{easing:elasticInOut}} class="wrap">
+        <h1>fade 예제</h1>
+      </div>
+    {/if}
+
+    {#if visibles.slide}
+      <div transition:slide={{easing:bounceInOut}} class="wrap">
+        <h1>slide 예제</h1>
+      </div>
+    {/if}
+  </article>
+</div>
+
+<style>
+  .wrap {
+    padding: 20px;
+    background-color: #288edd;
+    text-align: center;
+  }
+</style>
+```
+
+
+### blur 전환 옵션
+- opacity 
+  불투명도
+- amount  
+  흐릿한 효과의 크기
+
+```svelte
+{#if visibles.blur}
+  <div transition:blur={{opacity:100, amount:100}} class="wrap">
+    <h1>blur 예제</h1>
+  </div>
+{/if}
+```
+
+### Fly 전환 옵션
+설정 좌표로부터 날아오는 효과로, x,y라는 속성을 필수로 적용해야 하며, x,y중 하나만 입력해도 상관없다.  
+- opacity 
+  불투명도
+- x, y  
+  좌표
+
+```svelte
+{#if visibles.fly}
+  <div transition:fly={{x:200, y:100, opacity:100}} class="wrap">
+    <h1>fly 예제</h1>
+  </div>
+{/if}
+```
+
+
+### Scale 전환 옵션
+아주 작은 사이즈에서 원래 설정된 사이즈로 커지거나 작아지는 효과이다.  
+- opacity  
+  불투명도
+- start  
+  효과의 시작시점의 스케일 사이즈
+
+```svelte
+{#if visibles.scale}
+  <div transition:scale={{start:200}} class="wrap">
+    <h1>scale 예제</h1>
+  </div>
+{/if}
+```
+완성 코드: [Transition04.svelte](src/repl/part04_transition/Transition04.svelte)
+
+
+## in/out 디렉티브
+`transition:트랜지션이름` 으로 효과를 지정할 경우 화면에 나타날 때와 사라질 때 모두 같은 효과만 적용된다.  
+이때 in/out 디렉티브를 사용하면 나타날 때와 사라질 때 서로 다른 효과를 줄 수 있다.  
+
+```svelte
+<div in:트랜지션이름 out:트랜지션이름={{옵션}} class="wrap">
+</div>
+```
+사용 방법은 기존 transition 속성 대신 in 또는 out 속성을 사용하면 되고 각각의 트랜지션 이름을 지정해주면 된다.  
+또한 기존과 동일하게 옵션을 사용할수도 있다.  
+
+```svelte
+{#if visibles.inOut}
+  <div in:fade out:slide={{duration:500}} class="wrap">
+    <h1>in, out 예제</h1>
+  </div>
+{/if}
+```
+
+완성 코드: [Transition05.svelte](src/repl/part04_transition/Transition05.svelte)
+
+
+처음 출력될 때는 fade가 적용되고, 사라질때는 slide가 적용된다.  
+
+## draw
+svg라고 하는 좌표값으로 이루어진 이미지에 효과를 주는 방법이다.  
+`<svg>`태그 하위의 `<path>` 태그에 transition 효과를 부여한다.  
+- [Transition06.svelte](src/repl/part04_transition/Transition06.svelte)
+  ```svelte
+  {#if visible}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 103 124">
+      <g>
+        <path transition:draw={{ speed: 0.1 }}
+          style="stroke:#ff3e00; stroke-width: 1.5"
+          d="M45.41,108.86A21.81,21.81,0,0,1,22,100.18,20.2,20.2,0,0,1,18.53,84.9a19,19,0,0,1,.65-2.57l.52-1.58,1.41,1a35.32,35.32,0,0,0,10.75,5.37l1,.31-.1,1a6.2,6.2,0,0,0,1.11,4.08A6.57,6.57,0,0,0,41,95.19a6,6,0,0,0,1.68-.74L70.11,76.94a5.76,5.76,0,0,0,2.59-3.83,6.09,6.09,0,0,0-1-4.6,6.58,6.58,0,0,0-7.06-2.62,6.21,6.21,0,0,0-1.69.74L52.43,73.31a19.88,19.88,0,0,1-5.58,2.45,21.82,21.82,0,0,1-23.43-8.68A20.2,20.2,0,0,1,20,51.8a19,19,0,0,1,8.56-12.7L56,21.59a19.88,19.88,0,0,1,5.58-2.45A21.81,21.81,0,0,1,85,27.82,20.2,20.2,0,0,1,88.47,43.1a19,19,0,0,1-.65,2.57l-.52,1.58-1.41-1a35.32,35.32,0,0,0-10.75-5.37l-1-.31.1-1a6.2,6.2,0,0,0-1.11-4.08,6.57,6.57,0,0,0-7.06-2.62,6,6,0,0,0-1.68.74L36.89,51.06a5.71,5.71,0,0,0-2.58,3.83,6,6,0,0,0,1,4.6,6.58,6.58,0,0,0,7.06,2.62,6.21,6.21,0,0,0,1.69-.74l10.48-6.68a19.88,19.88,0,0,1,5.58-2.45,21.82,21.82,0,0,1,23.43,8.68A20.2,20.2,0,0,1,87,76.2a19,19,0,0,1-8.56,12.7L51,106.41a19.88,19.88,0,0,1-5.58,2.45"
+        />
+      </g>
+    </svg>
+  {/if}
+  ```
 
 </details>
 <br>
